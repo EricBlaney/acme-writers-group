@@ -64,6 +64,26 @@ app.post('/api/users', async(req,res,next) => {
   }
 })
 
+app.delete('/api/stories/:id', async(req,res,next) => {
+  try{
+    const story = await Story.findByPk(req.params.id);
+    await story.destroy();
+    res.sendStatus(204);
+  }
+  catch(ex){
+    next(ex);
+  }
+})
+
+app.post('/api/stories', async(req,res,next) => {
+  try{
+    res.status(201).send(await Story.create({ userId: req.body.userId, title: req.body.title, body: req.body.body }))
+  }
+  catch(ex){
+    next(ex);
+  }
+})
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, ()=> console.log(`listening on port ${port}`));

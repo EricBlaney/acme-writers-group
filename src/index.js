@@ -39,7 +39,6 @@ class App extends Component{
     this.setState({ users });
   }
   async createAUser(){
-    console.log(this.state.value);
     const response = await axios.post('/api/users', {name: this.state.value});
     const users = [...this.state.users, response.data];
     this.setState({ users });
@@ -54,14 +53,17 @@ class App extends Component{
       <div>
         <h1>Acme Writers Group ({ users.length })</h1>
         <main>
+          <div>
           <Users users = { users } userId={ userId } deleteAUser = {deleteAUser} />
-          {
-            userId ? <User userId={ userId } /> : null
-          }
           <form onSubmit = {createAUser}>
             <input type="text" value={this.state.value} onChange={handleChange}></input>
             <button type = "submit">Create User</button>
           </form>
+          </div>
+          {
+            userId ? <User userId={ userId } /> : null
+          }
+
         </main>
       </div>
     );
