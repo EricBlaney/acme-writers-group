@@ -10,8 +10,12 @@ class App extends Component{
     super();
     this.state = {
       users: [],
-      userId: ''
+      userId: '',
+      value: 'name'
     };
+    this.deleteAUser = this.deleteAUser.bind(this);
+    this.createAUser = this.createAUser.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
   async componentDidMount(){
     try {
@@ -29,16 +33,35 @@ class App extends Component{
     }
 
   }
+  async deleteAUser(user){
+    await axios.delete(`/api/users/${user.id}`);
+    const users = this.state.users.filter(_user => _user.id !== user.id);
+    this.setState({ users });
+  }
+  async createAUser(){
+    console.log(this.state.value);
+    const response = await axios.post('/api/users', {name: this.state.value});
+    const users = [...this.state.users, response.data];
+    this.setState({ users });
+  }
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
   render(){
     const { users, userId } = this.state;
+    const { deleteAUser, createAUser, handleChange } = this;
     return (
       <div>
         <h1>Acme Writers Group ({ users.length })</h1>
         <main>
-          <Users users = { users } userId={ userId }/>
+          <Users users = { users } userId={ userId } deleteAUser = {deleteAUser} />
           {
             userId ? <User userId={ userId } /> : null
           }
+          <form onSubmit = {createAUser}>
+            <input type="text" value={this.state.value} onChange={handleChange}></input>
+            <button type = "submit">Create User</button>
+          </form>
         </main>
       </div>
     );
