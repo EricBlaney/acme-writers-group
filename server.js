@@ -84,6 +84,17 @@ app.post('/api/stories', async(req,res,next) => {
   }
 })
 
+app.patch('/api/stories/:id', async(req,res,next) => {
+  try{
+    const story = await Story.findByPk(req.params.id);
+    res.status(204).send(await story.update(
+      {favorite: req.body.favorite}
+      ))
+  }
+  catch(ex){
+    next(ex);
+  }
+})
 const port = process.env.PORT || 3000;
 
 app.listen(port, ()=> console.log(`listening on port ${port}`));
